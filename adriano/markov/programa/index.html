@@ -1,0 +1,100 @@
+<HTML>
+<head>
+<link rel="stylesheet" type="text/css" media="screen" href="estilo.css">
+<script type="text/javascript" src='core.js'></script>
+<script type="text/javascript" src='compression.js'></script>
+<script type="text/javascript" src='decompression.js'></script>
+<script type="text/javascript" src='simulation.js'></script>
+<script type="text/javascript" src='stdio.js'></script>
+<script type="text/javascript" src='gui.js'></script>
+<script type="text/javascript" src='validation.js'></script>
+</head>
+
+<body>
+
+<div id="debugBox">
+	Validar Entrada:<input type="checkbox" id="isValidating" value="true" checked><br />
+	Turbo:<input type="checkbox" id="isTurboMode" value="true"><br />
+	Depurar:<input type="checkbox" id="isDebugging" value="true"><br />
+	Acompanhar Contadores:<input type="checkbox" id="isPrintingFreq" value="true"><br />
+	Estimação Adaptativa:<input type="checkbox" id="isAdaptive" value="true" checked><br />
+	Alertar ao Final:<input type="checkbox" id="isAlertWhenDone" value="true"><br />
+	<div id="txtDebug"></div>
+</div>
+<div id="commentBox"></div>
+
+<div id="master">
+<h2>Compressão de textos com<br />cadeias de Markov de alcance fixo</h1>
+<h4>Trabalho final da disciplina MAE0228<h4>
+<h3>Adriano Mitre, Helton Kishi, Igor Rascovsky</h3>
+
+<div id="cont">
+Modelo:
+<select id="selModelo">
+  <option value=0>independente</option>
+  <option value=1>markoviano de alcance 1</option>
+  <option value=2>markoviano de alcance 2</option>
+  <option value=3>markoviano de alcance 3</option>
+  <option value=4>markoviano de alcance 4</option>
+  <option value=5>markoviano de alcance 5</option>
+  <option value=6>markoviano de alcance 6</option>
+  <option value=7>markoviano de alcance 7</option>
+  <option value=8>markoviano de alcance 8</option>
+  <option value=9>markoviano de alcance 9</option>  
+  <option value=10>markoviano de alcance 10</option>  
+</select>
+<br />
+
+<p>
+Alfabeto de entrada:
+<select id="listaAlfabetos" onchange="selecionaAlfabeto()">
+  <option value='restricted-numeric'>numérico restrito</option>
+  <option value='numeric'>numérico</option>
+  <option value='genetic'>genético</option>
+  <option value='mini-alfanumeric'>mini-alfanumérico</option>
+  <option value='alfaCaseInsens'>alfanumérico insensível à caixa</option>
+  <option value='alfaCaseSens'>alfanumérico sensível à caixa</option>
+  <option value='portCaseInsens'>português insensível à caixa</option>
+  <option value='portCaseSens'>português sensível à caixa</option>
+  <option value='binary'>binário</option>
+</select>
+
+<input type="text" id="alfabeto" value="01" onkeyup="medeEntrada()"></text><br />
+</p>
+
+<p>
+Entrada: <br />
+<textarea id="txtEntrada" rows=8 class="paineis" onkeyup="medeEntrada()" WRAP=SOFT></textarea><br />
+<span id="contEntrada"></span>
+</p>
+
+<p>
+Número de passos:<!--&ordm-->
+<input id="txtNumPassos" size="3" value="01"></input><br />
+</p>
+
+<p>
+<input type="button" onclick="limparTxts()" value="limpar">
+<input type="button" class="direita" onclick="codificar()" value="codificar">
+<input type="button" class="direita" onclick="decodificar()" value="decodificar">
+<input type="button" class="direita" onclick="simular()" value="simular">
+</p>
+<p>
+Saída:
+</p>
+<textarea id="txtCodificado" class="paineis" readonly="readonly" WRAP=SOFT></textarea><br />
+<span id="contCodigo"></span>
+
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+selecionaAlfabeto();
+limparTxts();
+-->
+</script>
+</body>
+</HTML>
+
+

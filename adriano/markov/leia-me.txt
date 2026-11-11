@@ -1,0 +1,97 @@
+== PREÂMBULO ==
+
+São Paulo, 26 de junho de 2006
+
+Instituto de Matemática e Estatística da Universidade de São Paulo
+
+TRABALHO FINAL DE NOÇÕES DE
+PROBABILIDADE E PROCESSOS ESTOCÁSTICOS (MAE 228)
+
+Responsável pela Disciplina:
+ Prof. Antonio Galves <galves@ime.usp.br>
+
+Autores do trabalho:
+ Adriano Mitre <adriano.mitre@gmail.com>,
+ Helton Kishi <heltonmk@gmail.com>
+ Igor Rascovsky <igorrascovsky@yahoo.com.br>
+
+
+== COMPATIBILIDADE COM NAVEGADORES ==
+
+O programa funciona corretamente com o navegador
+Firefox versão 1.5.0.4, mas não com a versão 1.0.x.
+
+Com relação ao Internet Explorer, o sistema não roda com a versão 6 do navegador.
+Até o momento, não foram realizados testes com outras versões e/ou navegadores.
+Portanto, recomenda-se o navegador Firefox versão 1.5.0.4.
+
+O relatório pode ser visualizado, ainda que de forma aquém da ideal,
+no Internet Explorer 6.
+
+
+== ARQUIVOS ==
+
+O pacote entregue consta da seguinte estrutura de arquivos:
+
+leia-me.txt
+index.html
+principal.css
+
+dados/Candido1_bin.txt
+dados/Candido1_bin_preprocessado.txt
+dados/simulado_alcance_1.txt
+dados/simulado_alcance_2.txt
+
+relatorio/index.html
+relatorio/quirkmode.js
+relatorio/toc.css
+
+programa/compression.js
+programa/core.js
+programa/decompression.js
+programa/estilo.css
+programa/gui.js
+programa/index.html
+programa/simulation.js
+programa/stdio.js
+programa/validation.js
+
+
+== INSTRUÇÕES DE USO DO PROGRAMA ==
+
+Descomprimir o arquivo .zip em alguma pasta. Abrir o arquivo index.html em
+um navegador compatível com JavaScript, por exemplo o Mozilla Firefox..
+
+IMPORTANTE: O programa funciona corretamente com o navegador
+Firefox versão 1.5.0.4, mas não com a versão 1.0.x.
+Com relação ao Internet Explorer, o sistema não roda com a versão 6 do navegador.
+Até o momento, não foram realizados testes com outras versões e/ou navegadores.
+Portanto, recomenda-se o navegador Firefox versão 1.5.0.4.
+
+Para comprimir um texto, faça:
+
+  1. Escolha o modelo estatístico que deve ser usado.
+  2. Escolha o alfabeto de entrada.
+  3. Escreva o texto a ser comprimido no campo "Entrada".
+  4. Aperte o botão "codificar".
+  5. O código irá ser imprimido na tela no campo "Saída".
+
+Para descomprimir um texto, faça:
+
+  1. Escolha o modelo estatístico que foi usado para comprimir o texto inicial.
+  2. Escolha o alfabeto de entrada que foi usado no texto original.
+  3. Escreva o código gerado pelo compressor no campo "Entrada".
+  4. Verifique que a opção "Validar" (no canto esquerdo da tela) está desabilitada.
+  5. Aperte o botão "descodificar".
+  6. O texto original irá aparecer no campo "Saída".
+
+Para simular uma cadeia de Markov, faça:
+
+A simulação é feita com a matriz de transição criada durante o processo de
+compressão. Portanto, o texto que será gerado, terá as mesmas características
+do texto original da compressão.
+
+  1. Comprima um texto qualquer.
+  2. Escreva o número de caracteres a ser simulado no campo "Número de Passos:"
+  3. Aperte o botão "Simular".
+  4. A simulação aparecerá no campo "Saída".

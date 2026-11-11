@@ -1,0 +1,56 @@
+body {
+  counter-reset: secNum;
+  text-align: justify;
+}
+
+acronym {
+	cursor: help;
+}
+
+table {
+	font-family: "sans-serif";
+}
+
+@media screen {
+	body {
+		font-family:"Verdana";
+	}
+
+	#master {
+		position: relative;
+		margin-left:auto;
+		margin-right:auto;
+		width: 55%; /* 510 px*/
+		border: solid #4b4b4b 3px;
+		padding: 10px;
+		background: #FFEBCD; /* #5e5f5e;*/
+		text-align: justify;
+		/*
+		text-align: center;
+
+		border: solid #8B0000 7px;
+		padding: 10px;
+		background: #483D8B; // DarkSlateBlue // #5e5f5e;
+		*/
+	}
+
+	table {
+		font-size: small;
+	}
+
+	file {
+		font-family:"courier";
+	}
+}
+@media print {
+	table {
+		font-size: medium;
+	}
+	
+	#master {
+	}
+
+	file {
+		font-family:"sans-serif";
+	}
+}

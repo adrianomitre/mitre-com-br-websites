@@ -1,0 +1,84 @@
+/*
+Links úteis:
+http://www.w3schools.com/html/html_colornames.asp
+*/
+
+/* Cores em consideração:  Khaki, LightGoldenRodYellow, Peru */
+
+h1, h2 {color: #FFDEAD }
+
+body {
+	color: Wheat;
+	font-family:"Verdana";
+	text-align: center;
+	background: #dcdcdc;
+}
+
+#master {
+	position: relative;
+	text-align: center;
+	margin-left:auto;
+	margin-right:auto;
+	width: 45%; /* 510 px*/
+	border: solid #4b4b4b 3px;
+	padding: 10px;
+	background: Sienna; /* #5e5f5e;*/
+	/*
+	border: solid #8B0000 7px;
+	padding: 10px;
+	background: #483D8B; // DarkSlateBlue // #5e5f5e;
+	*/
+}
+
+#cont {
+	text-align: left;
+}
+
+#alfabeto {
+	font-family:"Verdana";
+	width:100%;
+	background: LightGoldenRodYellow;
+}
+
+textarea.paineis {
+	width:100%;
+	background: LightGoldenRodYellow;
+}
+
+#txtEntrada {
+	font-family:"Verdana";
+	rows: 80;
+}
+
+#txtCodificado {
+	font-family:"monospace";
+}
+
+#commentBox {
+	float: right;
+	margin: 5px 5px 5px 5px;
+	padding: 8px;
+	width: 20%; /* 254px; */
+	font-size:small;
+	color: white;
+	background: #5e5f5e;
+	border: solid #4b4b4b 3px;
+	text-align: left;
+}
+
+acronym {
+	border-bottom: none;
+	cursor: help;
+}
+
+#debugBox {
+	float: left;
+	margin: 5px 5px 5px 5px;
+	padding: 8px;
+	width: 20%; /*254px;*/
+	font-size:small;
+	color: white;
+	background: #5e5f5e;
+	text-align: right;
+	border: solid #4b4b4b 3px;
+}

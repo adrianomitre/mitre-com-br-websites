@@ -1,0 +1,361 @@
+<html>
+<head>
+  <title>Relatório do Trabalho Final de MAE 228</title>
+  <link rel="stylesheet" href="toc.css" type="text/css">
+  <link rel="stylesheet" href="secoes.css" type="text/css">
+  <link rel="stylesheet" href="../principal.css" type="text/css">
+  <script type="text/javascript" src="quirkmode.js"></script>
+</head>
+
+<body>
+<div id="master">
+<h2>Relatório do Trabalho Final de MAE 228</h2>
+
+<h3>Introdução</h3>
+<p>
+Este trabalho é uma realização conjunta de
+<acronym title="adriano <ponto> mitre [em] gmail {ponto} com">Adriano Mitre</acronym>,
+Helton Kishi e Igor Rascovsky.
+</p><p>
+O objetivo do trabalho foi implementar um sistema de compressão, descompressão
+e simulação de textos baseado em cadeias de Markov.
+</p>
+
+<h3>Decisões de Projeto</h3>
+
+<h4>Conjunto de Dados</h4>
+<p>
+O conjunto de dados escolhido pelo grupo foi o
+<a href="http://www.ime.usp.br/~galves/mae228/dados/linguistica.zip">linguístico</a>.
+</p><p>
+O arquivo <file>Candido1_bin.txt</file> do pacote pode ser lido em sua forma original pelo sistema
+<a href=http://www.r-project.org/">R</a>, mas teve de ser pré-processado a fim de
+adequar-se ao formato de entrada esperado pelo sistema desenvolvido pelo grupo. A versão
+pré-processada faz parte do pacote entregue (maiores detalhes em <a href="../leia-me.txt">leia-me.txt</a>).
+</p>
+<h4>Tecnologias Utilizadas</h4>
+<p>
+O grupo optou por codificar o sistema na linguagem JavaScript. A decisão levou em conta diversos fatores,
+tais como facilidade e agilidade no desenvolvimento do sistema e de sua interface, a qual decidimos que deveria
+ser gráfica e amigável. Além disso, a portabilidade do sistema e legibilidade de seu código foram
+fatores decisivos na escolha da linguagem.
+</p><p>
+Adicionalmente, foi utilizada a linguagem Java na codificação do <em>parser</em> da árvore probabilística
+produzida pelo sistema R.
+</p>
+
+<h4>Recursos Extras</h4>
+<h5>Compressão/Descompressão Adaptativa</h5>
+<p>
+O <a href="http://www.ime.usp.br/~galves/mae228/trabalho.pdf">enunciado</a> do trabalho não
+esclarece se a estimação das probabilidades de transição deve ser estática (offline) ou adaptativa (online). Alguns dias
+após a publicação do enunciado o professor afirmou tratar-se do primeiro caso, por conta da maior dificuldade
+da estimação adaptativa.
+</p><p>
+Na ocasião do esclarecimento, contudo, o grupo já havia implementado grande parte do sistema
+utilizado estimação adaptativa. Assim, os integrantes optaram por concluir a implementação da
+versão adaptativa e posteriormente incluir, para efeitos de comparação, a versão estática.
+</p><p>
+Em aula, o Prof. Antonio Galves fez entender que os grupos implementassem a versão adaptativa
+teriam <em>pontos de bonificação</em> na nota. Não ficou acertado, no entanto, quantos pontos seriam.
+</p>
+<h5 style="page-break-before:always">Modelo Independente e de Ordem Superior a Dois</h5>
+<p>
+Apesar de o enunciado exigir apenas cadeias de Markov de ordem 1 e 2,
+o sistema implementado suporta cadeias de qualquer ordem maior ou igual zero, lembrando que
+k = 0 é o modelo independente (ao longo do texto, k denotará o alcance). 
+</p><p>
+A fim de não sobrecarregar a interface com o usuário o grupo optou por limitar a ordem do modelo em 10,
+que é o alcance da VLMC ótima para o texto escolhido (detalhes na seção
+<a href="#arvoreProb">Árvore Probabilística</a>).</p><p>
+Convém notar que o grupo também realizou experimentos com cadeias de ordem diferente
+de 1 e 2. Além disso, para cada k foram realizados o dobro de testes: um para o compressor estático,
+outro para o dinâmico.
+</p>
+
+
+<h3>Algoritmos</h3>
+<h4>Estimação</h4>
+<p>
+A estimação das probabilidades de transição é feita como descrito nas
+<a href="http://www.linux.ime.usp.br/~amitre/mae228/markov_compress.pdf">notas de aula</a>
+sobre compressão com cadeias de Markov de alcance fixo, redigidas por Adriano Mitre.
+</p><p>
+Para a estimação estática, utilizou-se o estimador de máxima verossimilhança da Equação 6.
+A função que trata disso é <code>estProbMLE()</code> do arquivo <file>core.js</file>.
+</p><p>
+Já para a estimação adaptativa, utilizou-se o estimador de máxima verossimilhança com a Regra da Sucessão
+(Equação 7). A função que trata disso é <code>estProb()</code> do arquivo <file>core.js</file>.
+</p>
+
+<h4>Compressão</h4>
+<p>
+O algoritmo de compressão utiliza as probabilidades de transição estimadas para produzir códigos que
+seguem a prescrição de Shannon.
+O arquivo <file>compression.js</file> contém as principais funções relacionadas à compressão.
+</p><p>
+Convém destacar que a determinação dos códigos é feita <em>sem</em> a construção explícita da árvore de códigos.
+As funções que tratam disso são <code>getPrevSameLen()</code> e <code>getCode()</code>
+do arquivo <file>core.js</file>. Cabe explicitar que foi adotada a ordem lexicográfica usual,
+tanto para o alfabeto de entrada quando para o código binário.
+</p>
+
+<h4>Descompressão</h4>
+<p>
+O algoritmo de descompressão implementado foi o adaptativo, que opera por meio da criação de um vetor
+associativo que possui como valores os caracteres do alfabeto e cujas chaves são os códigos das mesmas.
+O arquivo <file>decompression.js</file> contém as principais funções relacionadas à descompressão.
+<p></p>
+O código associado aos k+1 primeiros caracteres têm, por convenção, o mesmo comprimento, que é o teto do logaritmo
+na base dois do comprimento do alfabeto de entrada. Portanto, o dicionário é inicializado desta maneira.
+Conforme o texto vai sendo descomprimido, o dicionário é atualizado. 
+</p>
+
+<h4 style="page-break-before:always">Simulação</h4>
+<p>
+Um modelo de ordem k só determina como se faz para simular caracteres a partir da (k+1)-ésimo. Em face disso,
+o grupo adotou a seguinte convenção: os k primeiros símbolos da simulação serão os k primeiros símbolos do texto de entrada.
+</p>
+As partições são geradas como uma matriz de transição cumulativa, que se baseia na matriz estimada
+ao final do processo de compressão. A função que trata disso é <code>criaMatrizTransicaoCumulativa()</code>
+do arquivo <file>simulation.js</file>.
+</p><p>
+Depois disso, há um laço principal. A cada iteração do laço simula-se um caractere.
+A função <code>proximoPassoMarkov()</code> determina a próximo caractere
+dada um prefixo e a matriz de transição.
+</p><p>
+Convém notar que, para o caso de passados que não ocorreram no texto de entrada, a simulação será realizada
+com distribuição de probabilidade uniforme. Por conta disso, pode haver no texto simulado caracteres que
+não ocorreram no texto de entrada.
+</p><p>
+O arquivo <file>simulation.js</file> contém as principais funções relacionadas à simulação.
+</p>
+
+<h3 style="page-break-before:always" id="arvoreProb"">Árvore Probabilística</h3>
+<p>
+A árvore probabilística correspondente ao modelo de memória variável
+foi produzida no sitema R pela seguinte seqüência de comandos:
+</p><p>
+<code>
+library(VLMC) <br />
+texto &lt;- scan(file="Candido1_bin.txt", sep=" ", what="")<br />
+arvore &lt;- vlmc(texto)<br />
+arvore</br>
+draw(arvore)<br />
+</code>
+</p><p>
+O comando <code>arvore</code> acima produz a seguinte saída:
+</p><p>
+<tt>
+`vlmc', a Variable Length Markov Chain;<br />
+         alphabet '01234', |alphabet| = 5, n = 13615.<br />
+Call: vlmc(dts = txt);  default cutoff = 4.744<br />
+ -> extensions (= $size ) :<br />
+   ord.MC   context nr.leaves     total <br />
+       10        38        17       392 <br />
+</tt>
+</p><p>
+O comando <code>draw(arvore)</code>, por sua vez, produz a saída abaixo:
+</p><p>
+<tt>
+[x]-( 6560 2955 2955 962 182| 13614)-F<br />
+ +--[0]-( 1794 1880 2125 627 134| 6560) <603.23><br />
+ |   +--[0]-( 559 987 186 48 14| 1794) <430.17><br />
+ |   |   +--[0]-( 163 396 0 0 0| 559) <89.29><br />
+ |   |   |   `--[0]-( 28 135 0 0 0| 163) <6.28>-T<br />
+ |   |   +--[1]-( 0 0 151 38 9| 198) <392.05>-T<br />
+ |   |   +--[2]-( 396 591 0 0 0| 987) <150.15>-T<br />
+ |   |   `--[3]-( 0 0 35 10 5| 50) <99.71>-T<br />
+ |   +--[1]-( 198 0 1481 393 106| 2178) <1221.90><br />
+ |   |   +--[0]-( 75 0 955 236 72| 1338) <11.89><br />
+ |   |   |   +--[0]-( 19 0 472 115 41| 647) <5.62><br />
+ |   |   |   |   `--[0]-( 6 0 178 39 17| 240) <0.37><br />
+ |   |   |   |       `--[0]-( 2 0 46 10 10| 68) <2.40><br />
+ |   |   |   |           `--[2]-( 2 0 37 8 8| 55) <0.04><br />
+ |   |   |   |               `--[0]-( 2 0 22 6 5| 35) <0.31><br />
+ |   |   |   |                   `--[0]-( 1 0 0 0 2| 3) <4.84>-T<br />
+ |   |   |   `--[2]-( 56 0 483 121 31| 691) <4.03><br />
+ |   |   |       +--[0]-( 44 0 344 81 22| 491) <0.36><br />
+ |   |   |       |   `--[1]-( 36 0 239 61 16| 352) <0.49><br />
+ |   |   |       |       `--[0]-( 23 0 151 43 10| 227) <0.20><br />
+ |   |   |       |           `--[2]-( 14 0 79 14 7| 114) <2.18><br />
+ |   |   |       |               `--[0]-( 10 0 55 12 5| 82) <0.20><br />
+ |   |   |       |                   `--[3]-( 5 0 10 0 0| 15) <4.97>-T<br />
+ |   |   |       `--[3]-( 0 0 26 12 1| 39) <4.97>-T<br />
+ |   |   `--[2]-( 123 0 526 157 34| 840) <14.54><br />
+ |   |       +--[0]-( 86 0 372 105 24| 587) <0.13><br />
+ |   |       |   `--[3]-( 7 0 100 23 6| 136) <6.71>-T<br />
+ |   |       `--[4]-( 5 0 21 15 0| 41) <4.94>-T<br />
+ |   +--[2]-( 987 893 0 0 0| 1880) <1094.92>-T<br />
+ |   `--[3]-( 50 0 458 186 14| 708) <436.69>-T<br />
+ +--[1]-( 2178 0 570 160 47| 2955) <823.98><br />
+ |   +--[0]-( 1338 0 402 106 34| 1880) <3.25><br />
+ |   |   +--[0]-( 647 0 259 60 21| 987) <7.75>-T<br />
+ |   |   `--[2]-( 691 0 143 46 13| 893) <9.47>-T<br />
+ |   `--[2]-( 840 0 168 54 13| 1075) <6.09>-T<br />
+ +--[2]-( 1880 1075 0 0 0| 2955) <1077.57><br />
+ |   `--[4]-( 45 49 0 0 0| 94) <4.83>-T<br />
+ +--[3]-( 708 0 166 88 1| 963) <280.94>-T<br />
+ `--[4]-( 0 0 94 87 0| 181) <248.81>-T<br />
+</tt>
+</p><p style="page-break-before:always">
+A árvore probabilística produzida corresponde à uma
+<acronym title="Variable Length Markov Chain">VLMC</acronym> que atende ao critério de otimalidade
+apresentado no artigo <em>A Universal Data Compression System</em> de Jorma Rissanen.
+</p><p>
+No caso do texto utilizado (<file>Candido1_bin.txt</file>), a árvore probabilística tem altura 10, indicando
+que a fonte que produziu o texto pode ser modelada de maneira ótima por uma cadeia de Markov de alcance 10.
+</p>
+<h4>Parser</h4>
+<p>
+A representação da árvore produzida pelo pacote VLMC do R é visualmente interessante (considerados
+os limites de uma representação ASCII), porém inadequada à leitura do programa desenvolvido pelo grupo.
+</p><p>
+Assim, os integrantes optaram por transformar a representação pelo R em outra mais conveniente.
+A representação transformada consiste de seqüências como <code>abc,d=1/2</code>,
+onde <code>1/2</code> é a probabilidade do caractere <code>d</code> dado o
+contexto <code>abc</code>. Exemplo de representação transformada:
+</p><p>
+<tt>
+0,0=1/3<br />
+0,1=2/3<br />
+01,0=1/4<br />
+01,1=3/4<br />
+11,0=1/2<br />
+11,1=1/2<br />
+</tt>
+</p><p>
+A fim de automatizar esta transformação, foi desenvolvido um <a href="../parser/Imprime.java">programa</a>
+em Java, que recebe um arquivo com a representação textual da árvore tal como produzida pelo R
+e gera as seqüências no formato acima descrito com suas respectivas probabilidades.
+</p><p>
+Infelizmente, o aplicativo desenvolvido acabou não sendo utilizado, porque, às vésperas da entrega deste
+trabalho, divulgou-se que o arquivo que deveria ter sido utilizado era o <file>Candido1_bin.txt</file>,
+e não <file>Candido1_p.txt</file>, como supusemos inicialmente.
+
+<h3>Resultados</h3>
+<p>
+O alfabeto de entrada utilizado foi A={0,1,2,3,4}, apelidado de <em>numérico restrito</em> no sistema desenvolvido
+pelo grupo.
+</p><p>
+</p>
+<h4>Texto Original</h4>
+<p>
+Apresentamos a seguir as taxas de compressão do texto original, em bits por símbolo (média).
+</p><p>
+<table border="1">
+<tr>
+  <td>tipo/alcance</td>
+  <th>0</th>
+  <th>1</th>
+  <th>2</th>
+  <th>3</th>
+  <th>4</th>
+  <th>5</th>
+  <th>6</th>
+  <th>7</th>
+  <th>8</th>
+  <th>9</th>
+  <th>10</th>
+</tr>
+<tr>
+ <th>Adaptativo</th>
+ <td>2,645</td> <!-- 2.64480352552332 k=0 -->
+ <td>1,899</td> <!-- 1.8988615497612926 k=1 -->
+ <td>1,632</td> <!-- 1.632243848696291 k=2 -->
+ <td>1,590</td> <!-- 1.5897172236503856 k=3 -->
+ <td>1,628</td> <!-- 1.6281307381564452 k=4 -->
+ <td>1,690</td> <!-- 1.6904149834741093 k=5 -->
+ <td>1,782</td> <!-- 1.7815644509731914 k=6 -->
+ <td>1,911</td> <!-- 1.9105398457583547 k=7 -->
+ <td>2,054</td> <!-- 2.053543885420492 k=8 -->
+ <td>2,218</td> <!-- 2.218435549026809 k=9 -->
+ <td>2,384</td> <!-- 2.3841351450605948 k=10 -->
+</tr>
+<tr>
+ <th>Estático</th>
+ <td>2,642</td> <!-- 2.6423797282409107 k=0 -->
+ <td>1,891</td> <!-- 1.8912229159015792 k=1 -->
+ <td>1,613</td> <!-- 1.6127800220345208 k=2 -->
+ <td>1,536</td> <!-- 1.5359529930224018 k=3 -->
+ <td>1,544</td> <!-- 1.5438854204921042 k=4 -->
+ <td>1,527</td> <!-- 1.5272860815277267 k=5 -->
+ <td>1,491</td> <!-- 1.491222915901579 k=6 -->
+ <td>1,459</td> <!-- 1.4594197576202717 k=7 -->
+ <td>1,413</td> <!-- 1.4130738156445097 k=8 -->
+ <td>1,347</td> <!-- 1.3466030113845024 k=9 -->
+ <td>1,270</td> <!-- 1.2700697759823725 k=10 -->
+</tr>
+</table>
+</p><p>
+<h4>Texto Simulado</h4>
+<p>
+Em acordo com o enunciado do trabalho, o texto simulado foi produzido por uma cadeia de ordem
+igual à utilizada na compressão.
+</p><p>
+Apresentamos a seguir as taxas de compressão do texto simulado, em bits por símbolo (média).
+</p>
+<table border="1">
+<tr>
+  <td>tipo/alcance</td>
+  <th>1</th>
+  <th>2</th>
+</tr>
+<tr>
+ <th>Adaptativo</th>
+ <td>1,893</td> <!-- 1.8929122291590157 k=1 -->
+ <td>1,614</td> <!-- 1.6138817480719794 k=2 -->
+</tr>
+<tr>
+ <th>Estático</th>
+ <td>1,883</td> <!-- 1.8828497980168932 k=1 -->
+ <td>1,602</td> <!-- 1.6016893132574366 k=2 -->
+</tr>
+</table>
+</p>
+<h3>Conclusões</h3>
+<h4>Adaptativo vs. Estático</h4>
+<p>
+Naturalmente, as taxas de compressão foram menores para o modelo adaptativo do que para o modelo
+estático, afinal o último utiliza o próprio estimador de máxima verossimilhança e não um outro
+que converge para este.
+</p><p>
+Isso, no entanto, não implica que a compressão <em>efetiva</em> seja sempre maior
+no caso estático, afinal neste último é necessário incluir no arquivo comprimido
+um preâmbulo com as probabilidades de transição.
+</p>
+<h4 style="page-break-before:always">Compressão vs. Alcance</h4>
+<p>
+Espera-se que um modelo markoviano de alcance maior permita comprimir tanto ou mais que um
+modelo de alcance menor, afinal uma cadeia de Markov de ordem k <em>também é</em> uma
+cadeia de Markov de ordem n > k.
+</p><p>
+É exatamente isso que acontece no caso estático. No caso adaptativo, entretanto, a situação é
+diferente. A compressão aumenta com o alcance até k = 3, mas quando k > 3 a compressão se torna inversamente proporcional ao alcance.
+</p><p>
+Esta situação aparentemente contraditória se deve ao fato de o modelo adaptativo utilizar uma distribuição
+<em>a priori</em> independente e uniforme (constantes somadas ao numerador e denominador na Equação 7
+das
+<a href="http://www.linux.ime.usp.br/~amitre/mae228/markov_compress.pdf">notas de aula</a>).
+Por conta disso, há uma "demora" na convergência para o estimador de máxima verossimilhança, a qual é
+proporcional ao alcance do modelo. Como se trata de um texto com comprimento finito,
+o efeito dessa demora é apreciável.
+</p>
+
+<h4>Original vs. Simulado</h4>
+<p>
+Em todos os casos, a compressão foi maior com os textos simulados.
+A razão para isto é o nível de ajuste do modelo à fonte.
+</p><p>
+O texto original não foi produzido por uma fonte markoviana de ordem k.
+Conseqüentemente, toda cadeia de Markov de ordem k será apenas uma
+aproximação da fonte.
+</p><p>
+No caso do texto simulado, por outro lado, a fonte <em>é</em> uma cadeia de Markov.
+Assim, há um perfeito ajuste entre modelo e fonte, resultando numa maior
+taxa de compressão.
+</p>
+
+</div>
+</body>
+</html>

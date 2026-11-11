@@ -1,0 +1,24 @@
+/* Numeracao automatica de secoes e subsecoes */
+
+h1 {
+	page-break-after:always;
+}
+
+h2, h3 {
+	page-break-after:avoid;
+}
+
+h3 {
+	counter-increment: secNum;
+	counter-reset: subSecNum;
+}
+h3:before {
+	content: counter(secNum) " ";
+}
+
+h4 {
+	counter-increment: subSecNum;
+}
+h4:before {
+	content: counter(secNum) "." counter(subSecNum) " ";
+}
